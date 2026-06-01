@@ -6,13 +6,11 @@ export type Song = {
   id: string;
   title: string;
   artist: string;
-  language: Language;
-  mood: Mood;
+  image_url: string | null;
+  preview_url: string | null;
 };
 
-export type RawSong = {
-  id: string;
-  title: string;
-  artist: string;
-  language: string; // keep loose (API is untrusted)
-};
+export interface RecommendationPayload {
+      mood: Mood;
+      language: Language;
+}
