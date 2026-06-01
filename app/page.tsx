@@ -1,65 +1,175 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { useRecommendations } from "@/hooks/useRecommendation";
+import SongCard from "@/components/SongCard";
+import { Mood, Language } from "@/types/music";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+
+const moods: Mood[] = ["happy", "sad", "calm", "energetic"];
+const languages: Language[] = ["hindi", "english"];
+
+const moodEmoji: Record<Mood, string> = {
+    happy: "😊",
+    sad: "😢",
+    calm: "😌",
+    energetic: "⚡",
+};
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+    const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(null);
+
+    const { mutate, data, isPending } = useRecommendations();
+
+    const handleSubmit = () => {
+        if (!selectedMood || !selectedLanguage) return;
+        mutate({ mood: selectedMood, language: selectedLanguage });
+    };
+
+    return (
+        <Box sx={{
+            minHeight: "100vh",
+            backgroundColor: "#0f0f1a",
+            py: 6,
+        }}>
+            <Container maxWidth="md">
+
+                {/* Header */}
+                <Box sx={{ textAlign: "center", mb: 6 }}>
+                    <MusicNoteIcon sx={{ fontSize: 48, color: "#6366f1" }} />
+                    <Typography variant="h3" fontWeight={800} sx={{ color: "white", mt: 1 }}>
+                        Moodify
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ color: "grey.500", mt: 1 }}>
+                        Tell us how you feel. We'll find the music.
+                    </Typography>
+                </Box>
+
+                {/* Mood Selector */}
+                <Box sx={{ mb: 4 }}>
+                    <Typography variant="overline" sx={{ color: "grey.400", letterSpacing: 2 }}>
+                        Select your mood
+                    </Typography>
+                    <Box sx={{ mt: 1 }}>
+                        <ToggleButtonGroup
+                            value={selectedMood}
+                            exclusive
+                            onChange={(_, value) => setSelectedMood(value)}
+                            sx={{ flexWrap: "wrap", gap: 1 }}
+                        >
+                            {moods.map((mood) => (
+                                <ToggleButton
+                                    key={mood}
+                                    value={mood}
+                                    sx={{
+                                        color: "grey.400",
+                                        borderColor: "grey.800",
+                                        borderRadius: "12px !important",
+                                        px: 3,
+                                        textTransform: "capitalize",
+                                        "&.Mui-selected": {
+                                            backgroundColor: "#6366f1",
+                                            color: "white",
+                                            borderColor: "#6366f1",
+                                        },
+                                        "&.Mui-selected:hover": {
+                                            backgroundColor: "#4f46e5",
+                                        },
+                                    }}
+                                >
+                                    {moodEmoji[mood]} {mood}
+                                </ToggleButton>
+                            ))}
+                        </ToggleButtonGroup>
+                    </Box>
+                </Box>
+
+                {/* Language Selector */}
+                <Box sx={{ mb: 5 }}>
+                    <Typography variant="overline" sx={{ color: "grey.400", letterSpacing: 2 }}>
+                        Select language
+                    </Typography>
+                    <Box sx={{ mt: 1 }}>
+                        <ToggleButtonGroup
+                            value={selectedLanguage}
+                            exclusive
+                            onChange={(_, value) => setSelectedLanguage(value)}
+                            sx={{ gap: 1 }}
+                        >
+                            {languages.map((lang) => (
+                                <ToggleButton
+                                    key={lang}
+                                    value={lang}
+                                    sx={{
+                                        color: "grey.400",
+                                        borderColor: "grey.800",
+                                        borderRadius: "12px !important",
+                                        px: 3,
+                                        textTransform: "capitalize",
+                                        "&.Mui-selected": {
+                                            backgroundColor: "#6366f1",
+                                            color: "white",
+                                            borderColor: "#6366f1",
+                                        },
+                                        "&.Mui-selected:hover": {
+                                            backgroundColor: "#4f46e5",
+                                        },
+                                    }}
+                                >
+                                    {lang}
+                                </ToggleButton>
+                            ))}
+                        </ToggleButtonGroup>
+                    </Box>
+                </Box>
+
+                {/* Submit Button */}
+                <Button
+                    variant="contained"
+                    fullWidth
+                    size="large"
+                    disabled={!selectedMood || !selectedLanguage || isPending}
+                    onClick={handleSubmit}
+                    sx={{
+                        backgroundColor: "#6366f1",
+                        borderRadius: 3,
+                        py: 1.5,
+                        fontWeight: 700,
+                        fontSize: "1rem",
+                        textTransform: "none",
+                        "&:hover": { backgroundColor: "#4f46e5" },
+                        "&.Mui-disabled": { backgroundColor: "grey.800", color: "grey.600" },
+                    }}
+                >
+                    {isPending ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Get Recommendations"}
+                </Button>
+
+                {/* Results */}
+                {data && data.length > 0 && (
+                    <Box sx={{ mt: 6 }}>
+                        <Typography variant="h6" fontWeight={700} sx={{ color: "white", mb: 3 }}>
+                            {data.length} songs for your mood
+                        </Typography>
+                        <Grid container spacing={2}>
+                            {data.map((song) => (
+                                <Grid item xs={12} sm={6} md={4} key={song.id}>
+                                    <SongCard song={song} />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
+                )}
+
+            </Container>
+        </Box>
+    );
 }
