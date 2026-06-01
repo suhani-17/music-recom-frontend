@@ -1,11 +1,11 @@
-import axios from 'axios';
+import Axios from 'axios';
 
-const apiClient = axios.create({
+const axios = Axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL, // Change this to your backend URL
     headers: {
         'Content-Type': 'application/json',
     },
     });
 
-export default apiClient;
+export default axios;
 

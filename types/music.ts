@@ -11,6 +11,6 @@ export type Song = {
 };
 
 export interface RecommendationPayload {
-      mood: Mood;
-      language: Language;
+  mood: Mood;
+  language: Language;
 }
