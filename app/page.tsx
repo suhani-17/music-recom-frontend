@@ -12,7 +12,9 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
+import Skeleton from "@mui/material/Skeleton";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import SongCardSkeleton from "@/components/SongCardSkeleton";
 
 const moods: Mood[] = ["happy", "sad", "calm", "energetic"];
 const languages: Language[] = ["hindi", "english"];
@@ -153,8 +155,22 @@ export default function Home() {
                     {isPending ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Get Recommendations"}
                 </Button>
 
+                {/* Skeletons while loading */}
+                {isPending && (
+                    <Box sx={{ mt: 6 }}>
+                        <Skeleton variant="text" width={200} height={32} sx={{ backgroundColor: "#2a2a3e", mb: 3 }} />
+                        <Grid container spacing={2}>
+                            {Array.from({ length: 6 }).map((_, i) => (
+                                <Grid item xs={12} sm={6} md={4} key={i}>
+                                    <SongCardSkeleton />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
+                )}
+
                 {/* Results */}
-                {data && data.length > 0 && (
+                {data && data.length > 0 && !isPending && (
                     <Box sx={{ mt: 6 }}>
                         <Typography variant="h6" fontWeight={700} sx={{ color: "white", mb: 3 }}>
                             {data.length} songs for your mood
