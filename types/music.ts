@@ -8,6 +8,7 @@ export type Song = {
   artist: string;
   image_url: string | null;
   preview_url: string | null;
+  spotify_url: string | null;
 };
 
 export interface RecommendationPayload {
