@@ -48,11 +48,11 @@ export default function Home() {
                 {/* Header */}
                 <Box sx={{ textAlign: "center", mb: 6 }}>
                     <MusicNoteIcon sx={{ fontSize: 48, color: "#6366f1" }} />
-                    <Typography variant="h3" fontWeight={800} sx={{ color: "white", mt: 1 }}>
+                    <Typography variant="h3" sx={{ color: "white", mt: 1, fontWeight: 800 }}>
                         Moodify
                     </Typography>
                     <Typography variant="subtitle1" sx={{ color: "grey.500", mt: 1 }}>
-                        Tell us how you feel. We'll find the music.
+                        Tell us how you feel. We&apos;ll find the music.
                     </Typography>
                 </Box>
 
@@ -161,7 +161,7 @@ export default function Home() {
                         <Skeleton variant="text" width={200} height={32} sx={{ backgroundColor: "#2a2a3e", mb: 3 }} />
                         <Grid container spacing={2}>
                             {Array.from({ length: 6 }).map((_, i) => (
-                                <Grid item xs={12} sm={6} md={4} key={i}>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={i}>
                                     <SongCardSkeleton />
                                 </Grid>
                             ))}
@@ -172,12 +172,12 @@ export default function Home() {
                 {/* Results */}
                 {data && data.length > 0 && !isPending && (
                     <Box sx={{ mt: 6 }}>
-                        <Typography variant="h6" fontWeight={700} sx={{ color: "white", mb: 3 }}>
+                        <Typography variant="h6" sx={{ color: "white", mb: 3, fontWeight: 700 }}>
                             {data.length} songs for your mood
                         </Typography>
                         <Grid container spacing={2}>
                             {data.map((song) => (
-                                <Grid item xs={12} sm={6} md={4} key={song.id}>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={song.id}>
                                     <SongCard song={song} />
                                 </Grid>
                             ))}
